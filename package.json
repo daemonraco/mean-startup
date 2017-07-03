@@ -1,0 +1,19 @@
+{
+  "name": "startup",
+  "version": "0.0.1",
+  "description": "This is a start-up application",
+  "main": "server.js",
+  "scripts": {
+    "build": "bash .tools/build-pack.sh",
+    "build-client": "bash .tools/build-client.sh",
+    "init": "bash .tools/init-directories.sh"
+  },
+  "author": "Alejandro Dario Simi",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
+    "express": "^4.15.3",
+    "mongoose": "^4.11.1"
+  }
+}
