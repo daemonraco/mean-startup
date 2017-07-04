@@ -1,10 +1,21 @@
 'use strict';
+//
+// Environment configurations @{
+var respectCORS = typeof process.env.RESPECT_CORS !== undefined;
+// @}
 
+//
+// Required libraries @{
 var express = require('express');
 var router = express.Router();
-var cors = require('cors');
+// @}
 
-router.all('*', cors());
+//
+// Avoid CORS validations.
+if (!respectCORS) {
+    var cors = require('cors');
+    router.all('*', cors());
+}
 
 router.get('/', (req, res) => {
     res.json({

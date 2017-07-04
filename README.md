@@ -14,7 +14,7 @@ npm run init
 ```bash
 node server.js
 ```
-We recommend to use `nodemon`.
+We recommend to use [`nodemon`](https://www.npmjs.com/package/nodemon).
 
 ### Launching the server with HTTPS
 ```bash
@@ -30,7 +30,7 @@ DB_NAME=mydb node server.js
 cd client
 ng serve
 ```
-Again, we recommend to use nodemon
+Again, we recommend to use [`nodemon`](https://www.npmjs.com/package/nodemon).
 
 # Publishing
 ## Build it
