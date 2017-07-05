@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 import { AppRoutes } from './app.routes';
@@ -19,10 +20,11 @@ import { NotFoundComponent } from './not-found/not-found.component';
   ],
   imports: [
     BrowserModule,
-    BsDropdownModule.forRoot(),
+    FormsModule,
     RouterModule.forRoot(AppRoutes, {
       enableTracing: false
-    })
+    }),
+    BsDropdownModule.forRoot()
   ],
   providers: [
   ],
