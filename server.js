@@ -26,7 +26,9 @@ var app = express();
 if (dbName) {
     var mongoose = require('mongoose');
     mongoose.Promise = global.Promise;
-    mongoose.connect('mongodb://localhost/' + dbName);
+    mongoose.connect('mongodb://localhost/' + dbName, {
+        useMongoClient: true
+    });
     mongoose.connection.on('error', (err) => {
         console.log(err.name + ': ' + err.message);
     });
