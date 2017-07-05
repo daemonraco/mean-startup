@@ -81,10 +81,11 @@ if (dbName) {
 //
 // Default redirects.
 app.use(function (req, res, next) {
-    if (req.headers['accept'] === 'application/json') {
+    if (req.xhr || req.headers['accept'] === 'application/json' || req.headers['content-type'] === 'application/json') {
         res.status(404).json({
             message: 'Not Found',
-            uri: req.url
+            uri: req.url,
+            isAjax: req.xhr
         });
     } else {
         res.sendFile(__dirname + '/public/index.html');
