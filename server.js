@@ -4,7 +4,7 @@
 var port = process.env.PORT || 3000;
 var portSSL = process.env.PORT_SSL || false;
 var dbName = process.env.DB_NAME || false;
-var respectCORS = typeof process.env.RESPECT_CORS !== 'undefined';
+var respectCORS = process.env.RESPECT_CORS ? true : false;
 // @}
 
 //
@@ -48,6 +48,13 @@ app.use('/example', routeExample);
 // @}
 
 //
+// Avoid CORS validations.
+if (!respectCORS) {
+    var cors = require('cors');
+    app.all('*', cors());
+}
+
+//
 // RESTful imports.
 //  @note this depends on the presence of a Mongo database.
 if (dbName) {
@@ -58,12 +65,6 @@ if (dbName) {
     //
     // Middlewares.
     app.use(methodOverride());
-    //
-    // Avoid CORS validations.
-    if (!respectCORS) {
-        var cors = require('cors');
-        app.all('*', cors());
-    }
     //
     // RESTful API options.
     let restOptions = {
@@ -77,9 +78,15 @@ if (dbName) {
 
 //
 // Default redirects.
-app.use(function (req, res) {
-    // Use res.sendfile, as it streams instead of reading the file into memory.
-    res.sendFile(__dirname + '/public/index.html');
+app.use(function (req, res, next) {
+    if (req.headers['accept'] === 'application/json') {
+        res.status(404).json({
+            message: 'Not Found',
+            uri: req.url
+        });
+    } else {
+        res.sendFile(__dirname + '/public/index.html');
+    }
 });
 
 //

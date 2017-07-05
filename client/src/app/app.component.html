@@ -7,8 +7,10 @@
 </head>
 
 <body [class]="bodyClass">
-  <app-nav-bar></app-nav-bar>
-  <div [class]="mainClass">
-    <router-outlet></router-outlet>
-  </div>
+  <block-ui [message]="'Loading...'">
+    <app-nav-bar></app-nav-bar>
+    <div [class]="mainClass">
+      <router-outlet></router-outlet>
+    </div>
+  </block-ui>
 </body>

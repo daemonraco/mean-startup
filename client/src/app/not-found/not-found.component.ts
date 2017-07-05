@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { AppComponent } from '../app.component';
+
 @Component({
   selector: 'app-not-found',
   templateUrl: './not-found.component.html',
@@ -9,7 +11,8 @@ import { Router } from '@angular/router';
 export class NotFoundComponent implements OnInit {
   unknownUrl: string = '';
 
-  constructor(private router: Router) {
+  constructor(private app: AppComponent, private router: Router) {
+    this.app.title = '404 Not Found';
     this.unknownUrl = router.url;
     console.log('Router', router.url);
   }
