@@ -34,10 +34,11 @@ export class ExamplesCrudComponent implements OnInit {
     this.blockUI.start('Deleting...');
 
     this.examples.delete(item._id).subscribe(response => {
+      this.blockUI.stop();
+
       this.loadItems();
     }, error => {
       console.log('Error:', error);
-    }, () => {
       this.blockUI.stop();
     });
   }
@@ -51,10 +52,11 @@ export class ExamplesCrudComponent implements OnInit {
 
       this.examples.create(this.currentItem).subscribe(response => {
         this.clearForm();
+        this.blockUI.stop();
+
         this.loadItems();
       }, error => {
         console.log('Error:', error);
-      }, () => {
         this.blockUI.stop();
       });
     } else {
@@ -62,10 +64,11 @@ export class ExamplesCrudComponent implements OnInit {
 
       this.examples.update(this.currentItem._id, this.currentItem).subscribe(response => {
         this.clearForm();
+        this.blockUI.stop();
+
         this.loadItems();
       }, error => {
         console.log('Error:', error);
-      }, () => {
         this.blockUI.stop();
       });
     }
@@ -79,10 +82,10 @@ export class ExamplesCrudComponent implements OnInit {
 
     this.examples.all().subscribe(response => {
       this.items = response;
+      this.blockUI.stop();
     }, error => {
       this.available = false;
       console.log('Error:', error);
-    }, () => {
       this.blockUI.stop();
     });
   }
