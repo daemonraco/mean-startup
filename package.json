@@ -5,6 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "./node_modules/.bin/nodemon",
+    "start-all": "bash .tools/start-all.sh",
+    "stop-all": "bash .tools/stop-all.sh",
     "init": "bash .tools/init-directories.sh",
     "build": "bash .tools/build-pack.sh",
     "build-client": "bash .tools/build-client.sh",
