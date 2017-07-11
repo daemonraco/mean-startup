@@ -1,7 +1,7 @@
 'use strict';
 //
 // Environment configurations @{
-var respectCORS = typeof process.env.RESPECT_CORS !== undefined;
+var respectCORS = process.env.RESPECT_CORS ? true : false;
 // @}
 
 //
