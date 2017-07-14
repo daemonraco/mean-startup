@@ -9,9 +9,9 @@ import { AppComponent } from '../app.component';
 })
 export class HomeComponent implements OnInit {
   constructor(private app: AppComponent) {
-    this.app.title = 'Home';
   }
 
   ngOnInit() {
+    this.app.title = 'Home';
   }
 }

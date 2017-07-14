@@ -20,8 +20,6 @@ export class ExamplesCrudComponent implements OnInit {
   items: Array<any> = [];
 
   constructor(private app: AppComponent, private examples: ExamplesService) {
-    this.app.title = 'Examples CRUD';
-
     this.clearForm();
     this.loadItems();
   }
@@ -75,6 +73,7 @@ export class ExamplesCrudComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.app.title = 'Examples CRUD';
   }
 
   protected loadItems(): void {

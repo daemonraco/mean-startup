@@ -12,11 +12,11 @@ export class NotFoundComponent implements OnInit {
   unknownUrl: string = '';
 
   constructor(private app: AppComponent, private router: Router) {
-    this.app.title = '404 Not Found';
-    this.unknownUrl = router.url;
-    console.log('Router', router.url);
   }
 
   ngOnInit() {
+    this.app.title = '404 Not Found';
+    this.unknownUrl = this.router.url;
+    console.log('Router', this.router.url);
   }
 }
