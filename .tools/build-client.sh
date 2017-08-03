@@ -1,10 +1,12 @@
 #!/bin/bash
 #
+P_NG='./node_modules/.bin/ng';
+#
 echo -e "\e[32mAccessing client:\e[0m";
 cd client;
 #
 echo -e "\e[32mBuilding for Production:\e[0m";
-ng build --target=production --aot=false | awk '{print "\t" $0}';
+$P_NG build --prod | awk '{print "\t" $0}';
 #
 echo -e "\e[32mReturning to server:\e[0m";
 cd ..;
