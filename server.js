@@ -1,32 +1,33 @@
 'use strict'
 //
 // Environment configurations @{
-var port = process.env.PORT || 3000;
-var portSSL = process.env.PORT_SSL || false;
-var dbName = process.env.DB_NAME || false;
-var respectCORS = process.env.RESPECT_CORS ? true : false;
+const port = process.env.PORT || 3000;
+const portSSL = process.env.PORT_SSL || false;
+const dbName = process.env.DB_NAME || false;
+const respectCORS = process.env.RESPECT_CORS ? true : false;
 // @}
 
 //
 // Required libraries @{
-var express = require('express');
-var bodyParser = require('body-parser');
-var path = require('path');
-var https = require('https');
-var http = require('http');
-var fs = require('fs');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
 // @}
 
 //
 // Main application.
-var app = express();
+const app = express();
 
 //
 // Database.
+let mongoose = undefined;
 if (dbName) {
-    var mongoose = require('mongoose');
+    mongoose = require('mongoose');
     mongoose.Promise = global.Promise;
-    mongoose.connect('mongodb://localhost/' + dbName, {
+    mongoose.connect(`mongodb://localhost/${dbName}`, {
         useMongoClient: true
     });
     mongoose.connection.on('error', (err) => {
@@ -45,14 +46,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //
 // Routes @{
-var routeExample = require('./routes/example');
+const routeExample = require('./routes/example');
 app.use('/example', routeExample);
 // @}
 
 //
 // Avoid CORS validations.
 if (!respectCORS) {
-    var cors = require('cors');
+    const cors = require('cors');
     app.all('*', cors());
 }
 
@@ -94,7 +95,7 @@ app.use(function (req, res, next) {
 
 //
 // HTTPS options.
-var options = {
+const options = {
     key: fs.readFileSync('secure/key.pem'),
     cert: fs.readFileSync('secure/cert.pem')
 };
@@ -102,7 +103,7 @@ var options = {
 // Create an HTTP service.
 http.createServer(app).listen(port, () => {
     console.log("+--------------------------------------------------");
-    console.log("| Server running on 'http://localhost:" + port + "'");
+    console.log(`| Server running on 'http://localhost:${port}'`);
 
     console.log("| \tDB: " + (dbName ? dbName : 'Not in use'));
     if (dbName) {
@@ -116,7 +117,7 @@ http.createServer(app).listen(port, () => {
 // Create an HTTPS service identical to the HTTP service.
 if (portSSL) {
     https.createServer(options, app).listen(portSSL, () => {
-        console.log("| Secure Server running on 'https://localhost:" + portSSL + "'");
+        console.log(`| Secure Server running on 'https://localhost:${portSSL}'`);
         console.log("+--------------------------------------------------");
     });
 }
