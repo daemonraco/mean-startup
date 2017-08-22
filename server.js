@@ -126,8 +126,6 @@ if (portSSL) {
 //
 // Process exit detection @{
 const cleanUpProcess = (from, err) => {
-    tracker.logSummary();
-
     if (err) {
         console.error(err.stack);
     }
