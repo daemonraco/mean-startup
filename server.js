@@ -41,6 +41,7 @@ if (dbName) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, 'public')));
 // @}
 
@@ -121,3 +122,18 @@ if (portSSL) {
         console.log("+--------------------------------------------------");
     });
 }
+
+//
+// Process exit detection @{
+const cleanUpProcess = (from, err) => {
+    tracker.logSummary();
+
+    if (err) {
+        console.error(err.stack);
+    }
+
+    process.exit();
+};
+process.on('SIGINT', () => cleanUpProcess('SIGINT'));
+process.on('uncaughtException', (err) => cleanUpProcess('uncaughtException', err));
+// @}

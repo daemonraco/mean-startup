@@ -28,6 +28,9 @@ export class ExamplesService {
   delete(id): Observable<any> {
     return this.http.delete(this.api + '/' + this.model + '/' + id, this.httpOptions).map(d => d.json());
   }
+  find(query: any): Observable<any> {
+    return this.http.get(`${this.api}/${this.model}/?query=${JSON.stringify(query)}`, this.httpOptions).map(d => d.json());
+  }
   get(id): Observable<any> {
     return this.http.get(this.api + '/' + this.model + '/' + id, this.httpOptions).map(d => d.json());
   }
