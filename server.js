@@ -20,17 +20,20 @@ const fs = require('fs');
 //
 // Main application.
 const app = express();
+const tools = {
+    app
+};
 
 //
 // Database.
-let mongoose = undefined;
+tools.mongoose = undefined;
 if (dbName) {
-    mongoose = require('mongoose');
-    mongoose.Promise = global.Promise;
-    mongoose.connect(`mongodb://localhost/${dbName}`, {
+    tools.mongoose = require('mongoose');
+    tools.mongoose.Promise = global.Promise;
+    tools.mongoose.connect(`mongodb://localhost/${dbName}`, {
         useMongoClient: true
     });
-    mongoose.connection.on('error', (err) => {
+    tools.mongoose.connection.on('error', (err) => {
         console.log(err.name + ': ' + err.message);
     });
 }
@@ -46,9 +49,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 // @}
 
 //
-// Routes @{
-const routeExample = require('./routes/example');
-app.use('/example', routeExample);
+// Loading routes automatically. Any file in './routes' that matches the pattern
+// '(.*)\.route\.js' will automatically required. @{
+{
+    const routesPath = path.join(__dirname, 'routes');
+    const routes = fs.readdirSync(routesPath);
+    const pattern = /(.*)\.route\.js$/;
+    const auxTools = Object.assign({}, tools);
+    for (let i in routes) {
+        if (routes[i].match(pattern)) {
+            try {
+                auxTools.routeName = routes[i].replace(pattern, '$1');
+                require(path.join(routesPath, routes[i]))(auxTools);
+            } catch (e) {
+                console.error(`Unable to load route '${routes[i]}'.\n\tError: ${e.message}`);
+            }
+        }
+    }
+}
 // @}
 
 //
