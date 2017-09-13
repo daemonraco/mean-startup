@@ -25,6 +25,10 @@ const tools = {
 };
 
 //
+// Loading configuration manager.
+tools.configs = require('./includes/configs.manager');
+
+//
 // Database.
 tools.mongoose = undefined;
 if (dbName) {
@@ -52,18 +56,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Loading routes automatically. Any file in './routes' that matches the pattern
 // '(.*)\.route\.js' will automatically required. @{
 {
-    const routesPath = path.join(__dirname, 'routes');
-    const routes = fs.readdirSync(routesPath);
-    const pattern = /(.*)\.route\.js$/;
     const auxTools = Object.assign({}, tools);
+    const pattern = /(.*)\.route\.js$/;
+    const routesPath = path.join(__dirname, 'routes');
+    const routes = fs
+        .readdirSync(this._configsDir)
+        .filter(x => x.match(pattern))
+        .map(x => {
+            return {
+                name: x.replace(pattern, '$1'),
+                path: path.join(routesPath, x)
+            };
+        });
+
     for (let i in routes) {
-        if (routes[i].match(pattern)) {
-            try {
-                auxTools.routeName = routes[i].replace(pattern, '$1');
-                require(path.join(routesPath, routes[i]))(auxTools);
-            } catch (e) {
-                console.error(`Unable to load route '${routes[i]}'.\n\tError: ${e.message}`);
-            }
+        try {
+            auxTools.routeName = routes[i].name;
+            require(routes[i].path)(auxTools);
+        } catch (e) {
+            console.error(`Unable to load route '${routes[i].name}'.\n\tError: ${e.message}`);
         }
     }
 }
@@ -78,23 +89,48 @@ if (!respectCORS) {
 
 //
 // RESTful imports.
-//  @note this depends on the presence of a Mongo database.
+//   @note this depends on the presence of a Mongo database.
 if (dbName) {
     //
     // Required libraries.
-    let methodOverride = require('method-override');
-    let restify = require('express-restify-mongoose');
+    const methodOverride = require('method-override');
+    const restify = require('express-restify-mongoose');
     //
     // Middlewares.
     app.use(methodOverride());
     //
     // RESTful API options.
-    let restOptions = {
+    const restOptions = {
         prefix: '/rest'
     };
     //
-    // Exposing models.
-    restify.serve(app, require('./schemas/example'), restOptions); // URI: /rest/v1/examples
+    // Exposing models automatically. Any file in './schema' that matches the
+    // pattern '(.*)\.schema\.js' will automatically exposed. @{
+    {
+        const hiddenSchemas = tools.configs.get('schemas').hiddenSchemas;
+        const auxTools = Object.assign({}, tools);
+        const pattern = /^(.+)\.schema\.js$/;
+        const schemasPath = path.join(__dirname, 'schemas');
+        const schemas = fs
+            .readdirSync(schemasPath)
+            .filter(x => x.match(pattern))
+            .map(x => {
+                return {
+                    name: x.replace(pattern, '$1'),
+                    path: path.join(schemasPath, x)
+                };
+            })
+            .filter(x => hiddenSchemas.indexOf(x.name) < 0);
+
+        for (let i in schemas) {
+            try {
+                restify.serve(app, require(schemas[i].path), restOptions); // URI: /rest/v1/[schema-name]
+            } catch (e) {
+                console.error(`Unable to load schema '${schemas[i].name}'.\n\tError: ${e.message}`);
+            }
+        }
+    }
+    // @}
 }
 // @}
 

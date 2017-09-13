@@ -13,6 +13,7 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ExamplesCrudComponent } from './examples-crud/examples-crud.component';
+import { StringifyPipe } from './pipes/stringify.pipe';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ExamplesCrudComponent } from './examples-crud/examples-crud.component';
     NavBarComponent,
     HomeComponent,
     NotFoundComponent,
-    ExamplesCrudComponent
+    ExamplesCrudComponent,
+    StringifyPipe
   ],
   imports: [
     BrowserModule,
