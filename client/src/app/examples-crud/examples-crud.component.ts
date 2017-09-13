@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 import { AppComponent } from '../app.component';
 
@@ -12,8 +11,6 @@ import { ExamplesService } from '../providers/examples.service';
   providers: [ExamplesService]
 })
 export class ExamplesCrudComponent implements OnInit {
-  @BlockUI() blockUI: NgBlockUI;
-
   available: boolean = true;
   currentItem: any = {};
   formTitle: string = '';
@@ -29,15 +26,15 @@ export class ExamplesCrudComponent implements OnInit {
     this.currentItem = {};
   }
   public deleteItem(item): void {
-    this.blockUI.start('Deleting...');
+    this.app.startLoading('Deleting...');
 
     this.examples.delete(item._id).subscribe(response => {
-      this.blockUI.stop();
+      this.app.stopLoading();
 
       this.loadItems();
     }, error => {
-      console.log('Error:', error);
-      this.blockUI.stop();
+      console.log('ExamplesCrudComponent::deleteItem() Error:', error);
+      this.app.stopLoading();
     });
   }
   public editItem(item): void {
@@ -46,28 +43,28 @@ export class ExamplesCrudComponent implements OnInit {
   }
   public saveItem(): void {
     if (typeof this.currentItem._id === 'undefined') {
-      this.blockUI.start('Creating...');
+      this.app.startLoading('Creating...');
 
       this.examples.create(this.currentItem).subscribe(response => {
         this.clearForm();
-        this.blockUI.stop();
+        this.app.stopLoading();
 
         this.loadItems();
       }, error => {
-        console.log('Error:', error);
-        this.blockUI.stop();
+        console.log('ExamplesCrudComponent::saveItem() Error:', error);
+        this.app.stopLoading();
       });
     } else {
-      this.blockUI.start('Updating...');
+      this.app.startLoading('Updating...');
 
       this.examples.update(this.currentItem._id, this.currentItem).subscribe(response => {
         this.clearForm();
-        this.blockUI.stop();
+        this.app.stopLoading();
 
         this.loadItems();
       }, error => {
-        console.log('Error:', error);
-        this.blockUI.stop();
+        console.log('ExamplesCrudComponent::saveItem() Error:', error);
+        this.app.stopLoading();
       });
     }
   }
@@ -77,15 +74,15 @@ export class ExamplesCrudComponent implements OnInit {
   }
 
   protected loadItems(): void {
-    this.blockUI.start('Loading...');
+    this.app.startLoading('Loading...');
 
-    this.examples.all().subscribe(response => {
+    this.examples.all().subscribe((response: any) => {
       this.items = response;
-      this.blockUI.stop();
+      this.app.stopLoading();
     }, error => {
       this.available = false;
-      console.log('Error:', error);
-      this.blockUI.stop();
+      console.log('ExamplesCrudComponent::loadItems() Error:', error);
+      this.app.stopLoading();
     });
   }
 }

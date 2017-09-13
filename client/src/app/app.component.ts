@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
     selector: 'app-root',
@@ -6,6 +7,8 @@ import { Component } from '@angular/core';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+    @BlockUI() blockUI: NgBlockUI;
+
     titlePrefix: string = 'MEAN Start-up Client';
     title: string;
     bodyClass: string;
@@ -25,5 +28,11 @@ export class AppComponent {
     }
     public setTitle(title: string): void {
         this.title = this.titlePrefix + (title ? ` - ${title}` : '');
+    }
+    public startLoading(message: string): void {
+        this.blockUI.start(message);
+    }
+    public stopLoading(): void {
+        this.blockUI.stop();
     }
 }

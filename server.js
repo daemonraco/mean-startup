@@ -60,7 +60,7 @@ app.use(express.static(path.join(__dirname, 'public')));
     const pattern = /(.*)\.route\.js$/;
     const routesPath = path.join(__dirname, 'routes');
     const routes = fs
-        .readdirSync(this._configsDir)
+        .readdirSync(routesPath)
         .filter(x => x.match(pattern))
         .map(x => {
             return {
