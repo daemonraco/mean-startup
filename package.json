@@ -17,6 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "chalk": "^2.1.0",
     "cors": "^2.8.3",
     "express": "^4.15.3",
     "express-restify-mongoose": "^4.1.3",

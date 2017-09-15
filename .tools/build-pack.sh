@@ -2,7 +2,7 @@
 #
 P_DISTDIR="./dist";
 #
-P_ASSETS=".tools configs public routes schemas secure server.js package.json"
+P_ASSETS=".tools assets configs public routes schemas secure server.js package.json"
 #
 echo -e "\e[32mReseting distribution directory:\e[0m";
 if [ -e "$P_DISTDIR" ]; then

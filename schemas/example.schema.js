@@ -2,11 +2,11 @@
 
 //
 // Required libraries @{
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 // @}
 
-var ExamplesSchema = new Schema({
+const ExamplesSchema = new Schema({
     name: {
         type: String,
         required: 'Item name'
@@ -21,4 +21,6 @@ var ExamplesSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('examples', ExamplesSchema);
+const model = mongoose.model('examples', ExamplesSchema);
+
+module.exports = model;

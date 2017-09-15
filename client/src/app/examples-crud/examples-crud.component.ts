@@ -70,7 +70,7 @@ export class ExamplesCrudComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.app.title = 'Examples CRUD';
+    this.app.setTitle('Examples CRUD');
   }
 
   protected loadItems(): void {

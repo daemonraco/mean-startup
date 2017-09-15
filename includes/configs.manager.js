@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
 
 class ConfigsManager {
     //
@@ -20,6 +21,8 @@ class ConfigsManager {
     //
     // Protected methods.
     _load() {
+        console.log(`| Loading configs:`);
+
         this._configsDir = path.join(__dirname, '../configs');
 
         const pattern = /^(.*)\.config\.(json|js)$/;
@@ -35,8 +38,15 @@ class ConfigsManager {
 
         this._configs = {};
         for (let i in files) {
-            this._configs[files[i].name] = require(files[i].path);
+            try {
+                this._configs[files[i].name] = require(files[i].path);
+                console.log(`| \t- '${chalk.green(files[i].name)}'`);
+            } catch (e) {
+                console.error(`Unable to load config '${files[i].name}'.\n\tError: ${e.message}`);
+            }
         }
+
+        console.log(`|`);
     }
 }
 

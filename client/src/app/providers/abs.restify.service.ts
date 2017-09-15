@@ -19,6 +19,9 @@ export abstract class RestifyService {
     create(data): Observable<Response> {
         return this.http.post(`${this.api}/${this.model}`, data, this.getHeaders()).map(d => d.json());
     }
+    count(options: object = {}): Observable<Response> {
+        return this.http.get(`${this.api}/${this.model}/count${this.jsonToQuery(options)}`, this.getHeaders()).map(d => d.json());
+    }
     delete(id): Observable<Response> {
         return this.http.delete(`${this.api}/${this.model}/${id}`, this.getHeaders()).map(d => d.json());
     }

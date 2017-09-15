@@ -15,29 +15,28 @@ const path = require('path');
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
+const chalk = require('chalk');
 // @}
+
+console.log(`+---------------------------------------------------`);
 
 //
 // Main application.
 const app = express();
-const tools = {
-    app
-};
 
 //
 // Loading configuration manager.
-tools.configs = require('./includes/configs.manager');
+const configs = require('./includes/configs.manager');
 
 //
 // Database.
-tools.mongoose = undefined;
 if (dbName) {
-    tools.mongoose = require('mongoose');
-    tools.mongoose.Promise = global.Promise;
-    tools.mongoose.connect(`mongodb://localhost/${dbName}`, {
+    const mongoose = require('mongoose');
+    mongoose.Promise = global.Promise;
+    mongoose.connect(`mongodb://localhost/${dbName}`, {
         useMongoClient: true
     });
-    tools.mongoose.connection.on('error', (err) => {
+    mongoose.connection.on('error', (err) => {
         console.log(err.name + ': ' + err.message);
     });
 }
@@ -53,34 +52,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // @}
 
 //
-// Loading routes automatically. Any file in './routes' that matches the pattern
-// '(.*)\.route\.js' will automatically required. @{
-{
-    const auxTools = Object.assign({}, tools);
-    const pattern = /(.*)\.route\.js$/;
-    const routesPath = path.join(__dirname, 'routes');
-    const routes = fs
-        .readdirSync(routesPath)
-        .filter(x => x.match(pattern))
-        .map(x => {
-            return {
-                name: x.replace(pattern, '$1'),
-                path: path.join(routesPath, x)
-            };
-        });
-
-    for (let i in routes) {
-        try {
-            auxTools.routeName = routes[i].name;
-            require(routes[i].path)(auxTools);
-        } catch (e) {
-            console.error(`Unable to load route '${routes[i].name}'.\n\tError: ${e.message}`);
-        }
-    }
-}
-// @}
-
-//
 // Avoid CORS validations.
 if (!respectCORS) {
     const cors = require('cors');
@@ -88,51 +59,18 @@ if (!respectCORS) {
 }
 
 //
-// RESTful imports.
+// Loading routes manager.
+const routes = require('./includes/routes.manager');
+routes.load({ app });
+
+//
+// Loading schemas manager.
 //   @note this depends on the presence of a Mongo database.
 if (dbName) {
-    //
-    // Required libraries.
-    const methodOverride = require('method-override');
-    const restify = require('express-restify-mongoose');
-    //
-    // Middlewares.
-    app.use(methodOverride());
-    //
-    // RESTful API options.
-    const restOptions = {
-        prefix: '/rest'
-    };
-    //
-    // Exposing models automatically. Any file in './schema' that matches the
-    // pattern '(.*)\.schema\.js' will automatically exposed. @{
-    {
-        const hiddenSchemas = tools.configs.get('schemas').hiddenSchemas;
-        const auxTools = Object.assign({}, tools);
-        const pattern = /^(.+)\.schema\.js$/;
-        const schemasPath = path.join(__dirname, 'schemas');
-        const schemas = fs
-            .readdirSync(schemasPath)
-            .filter(x => x.match(pattern))
-            .map(x => {
-                return {
-                    name: x.replace(pattern, '$1'),
-                    path: path.join(schemasPath, x)
-                };
-            })
-            .filter(x => hiddenSchemas.indexOf(x.name) < 0);
-
-        for (let i in schemas) {
-            try {
-                restify.serve(app, require(schemas[i].path), restOptions); // URI: /rest/v1/[schema-name]
-            } catch (e) {
-                console.error(`Unable to load schema '${schemas[i].name}'.\n\tError: ${e.message}`);
-            }
-        }
-    }
-    // @}
+    const schemas = require('./includes/schemas.manager');
+    schemas.loadRestfulSchemas({ app });
+    schemas.loadInternalSchemas();
 }
-// @}
 
 //
 // Default redirects.
@@ -157,23 +95,23 @@ const options = {
 
 // Create an HTTP service.
 http.createServer(app).listen(port, () => {
-    console.log("+--------------------------------------------------");
-    console.log(`| Server running on 'http://localhost:${port}'`);
+    console.log(`+---------------------------------------------------`);
+    console.log(`| Server running on '${chalk.green(`http://localhost:${port}`)}'`);
 
-    console.log("| \tDB: " + (dbName ? dbName : 'Not in use'));
+    console.log(`| \tDB: ${chalk.green(dbName ? dbName : 'Not in use')}`);
     if (dbName) {
-        console.log("| \t\tRestify available");
+        console.log(`| \t\t${chalk.cyan(`Restify available`)}`);
     }
-    console.log("| \tCORS: " + (respectCORS ? 'Respects the protocol' : 'Avoiding warnings'));
+    console.log(`| \tCORS: ${respectCORS ? chalk.green('Respects the protocol') : chalk.yellow('Avoiding warnings')}`);
 
-    console.log("+--------------------------------------------------");
+    console.log(`+---------------------------------------------------`);
 });
 //
 // Create an HTTPS service identical to the HTTP service.
 if (portSSL) {
     https.createServer(options, app).listen(portSSL, () => {
-        console.log(`| Secure Server running on 'https://localhost:${portSSL}'`);
-        console.log("+--------------------------------------------------");
+        console.log(`| Secure Server running on '${chalk.green(`https://localhost:${portSSL}`)}'`);
+        console.log(`+---------------------------------------------------`);
     });
 }
 
