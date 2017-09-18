@@ -8,12 +8,13 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 import { AppRoutes } from './app.routes';
 
+import { ToolsModule } from './tools/index';
+
 import { AppComponent } from './app.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ExamplesCrudComponent } from './examples-crud/examples-crud.component';
-import { StringifyPipe } from './pipes/stringify.pipe';
 
 @NgModule({
   declarations: [
@@ -21,8 +22,7 @@ import { StringifyPipe } from './pipes/stringify.pipe';
     NavBarComponent,
     HomeComponent,
     NotFoundComponent,
-    ExamplesCrudComponent,
-    StringifyPipe
+    ExamplesCrudComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +32,8 @@ import { StringifyPipe } from './pipes/stringify.pipe';
       enableTracing: false
     }),
     BlockUIModule,
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(),
+    ToolsModule
   ],
   providers: [
   ],

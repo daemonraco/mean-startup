@@ -14,6 +14,24 @@ class SchemasManager {
     }
     //
     // Public methods.
+    get(name) {
+        let schema = null;
+
+        for (let i in this._schemas) {
+            const entry = this._schemas[i];
+            if (entry.name === name) {
+                if (entry.loaded) {
+                    schema = mongoose.model('examples');
+                } else {
+                    schema = require(entry.path);
+                    entry.loaded = true;
+                }
+                break;
+            }
+        }
+
+        return schema;
+    }
     loadInternalSchemas() {
         if (!this._internalSchemasLoaded) {
             this._internalSchemasLoaded = true;
@@ -26,6 +44,7 @@ class SchemasManager {
                     try {
                         require(schemas[i].path);
                         console.log(`| \t- '${chalk.green(schemas[i].name)}'`);
+                        schemas[i].loaded = true;
                     } catch (e) {
                         console.error(`Unable to load schema '${schemas[i].name}'.\n\tError: ${e.message}`);
                     }
@@ -58,6 +77,7 @@ class SchemasManager {
                     try {
                         restify.serve(app, require(schemas[i].path), restOptions);
                         console.log(`| \t- '/rest/v1/${chalk.green(schemas[i].name)}'`);
+                        schemas[i].loaded = true;
                     } catch (e) {
                         console.error(`Unable to load schema '${schemas[i].name}'.\n\tError: ${e.message}`);
                     }
@@ -86,7 +106,8 @@ class SchemasManager {
             .map(x => {
                 return {
                     name: x.replace(pattern, '$1'),
-                    path: path.join(schemasPath, x)
+                    path: path.join(schemasPath, x),
+                    loaded: false
                 };
             });
         // @}

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PaginatorEvent, SagasuConfig, SagasuField, SagasuEvent } from '../tools';
 
 import { AppComponent } from '../app.component';
 
@@ -11,14 +12,20 @@ import { ExamplesService } from '../providers/examples.service';
   providers: [ExamplesService]
 })
 export class ExamplesCrudComponent implements OnInit {
+  protected currentPage: number = -1;
+  protected pageQuery: any = {};
+  protected searchboxQuery: any = {};
+
   available: boolean = true;
   currentItem: any = {};
   formTitle: string = '';
   items: Array<any> = [];
+  searchboxConfig: SagasuConfig = null;
+  total: number = -1;
 
-  constructor(private app: AppComponent, private examples: ExamplesService) {
-    this.clearForm();
-    this.loadItems();
+  constructor(
+    private app: AppComponent,
+    private examples: ExamplesService) {
   }
 
   public clearForm(): void {
@@ -30,8 +37,7 @@ export class ExamplesCrudComponent implements OnInit {
 
     this.examples.delete(item._id).subscribe(response => {
       this.app.stopLoading();
-
-      this.loadItems();
+      this.countItems();
     }, error => {
       console.log('ExamplesCrudComponent::deleteItem() Error:', error);
       this.app.stopLoading();
@@ -48,8 +54,7 @@ export class ExamplesCrudComponent implements OnInit {
       this.examples.create(this.currentItem).subscribe(response => {
         this.clearForm();
         this.app.stopLoading();
-
-        this.loadItems();
+        this.countItems();
       }, error => {
         console.log('ExamplesCrudComponent::saveItem() Error:', error);
         this.app.stopLoading();
@@ -60,7 +65,6 @@ export class ExamplesCrudComponent implements OnInit {
       this.examples.update(this.currentItem._id, this.currentItem).subscribe(response => {
         this.clearForm();
         this.app.stopLoading();
-
         this.loadItems();
       }, error => {
         console.log('ExamplesCrudComponent::saveItem() Error:', error);
@@ -68,15 +72,46 @@ export class ExamplesCrudComponent implements OnInit {
       });
     }
   }
+  public updatePage(event: PaginatorEvent): void {
+    if (event && event.page != this.currentPage) {
+      this.currentPage = event.page;
+      this.pageQuery = event.toJSONForApi();
+      this.loadItems();
+    }
+  }
+  public updateSeach(event: SagasuEvent): void {
+    this.searchboxQuery = event.query;
+    this.countItems();
+  }
 
   ngOnInit() {
     this.app.setTitle('Examples CRUD');
+    this.clearForm();
+    this.loadSearchBox();
+    this.countItems();
   }
 
-  protected loadItems(): void {
-    this.app.startLoading('Loading...');
+  protected countItems(): void {
+    this.currentPage = -1;
 
-    this.examples.all().subscribe((response: any) => {
+    const query = {
+      query: this.searchboxQuery
+    };
+
+    this.examples.count(query).subscribe((countResponse: any) => {
+      this.total = countResponse.count;
+    }, error => {
+      this.available = false;
+      console.log('ExamplesCrudComponent::loadItems() Error:', error);
+    });
+  }
+  protected loadItems(): void {
+    let query = Object.assign({
+      query: this.searchboxQuery
+    }, this.pageQuery);
+
+    this.app.startLoading('Loading...');
+    this.examples.all(query).subscribe((response: any) => {
       this.items = response;
       this.app.stopLoading();
     }, error => {
@@ -84,5 +119,27 @@ export class ExamplesCrudComponent implements OnInit {
       console.log('ExamplesCrudComponent::loadItems() Error:', error);
       this.app.stopLoading();
     });
+  }
+  protected loadSearchBox(): void {
+    let field;
+
+    this.searchboxConfig = new SagasuConfig();
+
+    field = SagasuField.create('name', SagasuField.TYPE_TEXT);
+    this.searchboxConfig.addField(field);
+
+    field = SagasuField.create('description', SagasuField.TYPE_TEXT);
+    this.searchboxConfig.addField(field);
+
+    field = SagasuField.create('size', SagasuField.TYPE_SELECTOR);
+    field.addOption('');
+    field.addOption('medium');
+    field.addOption('short');
+    field.addOption('tall');
+    this.searchboxConfig.addField(field);
+
+    field = SagasuField.create('_ANY_', SagasuField.TYPE_TEXT);
+    field.title = 'Generic';
+    this.searchboxConfig.addField(field);
   }
 }

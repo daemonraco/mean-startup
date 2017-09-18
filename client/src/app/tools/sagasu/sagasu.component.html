@@ -1,0 +1,44 @@
+<div *ngIf="config">
+  <pre *ngIf="debugMode">
+SAGASU DEBUG:
+  - fields:   {{config.fields.length}}
+  - expanded: {{expanded}}
+  - query:    {{query | stringify: 'minified'}}
+  - url:      {{url}}
+
+  - config:   {{config | stringify: 'minified'}}
+</pre>
+
+  <div *ngIf="config.fields.length > 0" class="panel panel-default">
+    <div class="panel-heading" (click)="toggleFilters()">
+      <button type="button" class="close">
+      <i *ngIf="expanded" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></i>
+      <i *ngIf="!expanded" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></i>
+    </button> Filters
+    </div>
+
+    <form class="panel-body" [ngClass]="{'hide': !expanded}" (submit)="search()">
+      <div class="form-group col-sm-4 col-md-3" *ngFor="let field of config.fields">
+        <label>{{field.title}}</label>
+
+        <input *ngIf="['text'].indexOf(field.type) >= 0" [type]="field.type" class="form-control input-sm" [id]="field.id" [name]="field.name"
+          [(ngModel)]="field.value" [placeholder]="field.placeholder">
+
+        <select *ngIf="field.type == 'selector'" class="form-control input-sm" [id]="field.id" [name]="field.name" [(ngModel)]="field.value">
+        <option *ngFor="let opt of field.options" [value]="opt.value">{{opt.title}}</option>
+      </select>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <button type="submit" class="btn pull-right btn-sm btn-default">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        Search
+      </button>
+      <button type="button" class="btn pull-right btn-sm btn-link" (click)="clear()">
+        <i class="fa fa-eraser" aria-hidden="true"></i>
+        Clear
+      </button>
+    </form>
+  </div>
+</div>

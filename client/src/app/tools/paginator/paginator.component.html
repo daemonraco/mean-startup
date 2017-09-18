@@ -1,0 +1,35 @@
+<pre *ngIf="debugMode">
+PAGINATOR DEBUG:
+  - page:         {{page}}
+  - pageCount:    {{pageCount}}
+  - pageSize:     {{pageSize}}
+  - singlePage:   {{singlePage}}
+  - preEllipsis:  {{preEllipsis}}
+  - postEllipsis: {{postEllipsis}}
+  - total:        {{total}}
+</pre>
+
+<nav aria-label="Page navigation" *ngIf="!singlePage">
+  <ul class="pagination">
+    <li [ngClass]="{'disabled': firstPage.position == page}">
+      <a href="#" aria-label="Previous" (click)="navigateTo(firstPage)">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+
+    <li *ngIf="preEllipsis"><span>...</span></li>
+
+    <li *ngFor="let oPage of pages" [ngClass]="{'active': oPage.position == page}">
+      <a *ngIf="oPage.position != page" href="#" (click)="navigateTo(oPage)">{{oPage.name}}</a>
+      <span *ngIf="oPage.position == page">{{oPage.name}}</span>
+    </li>
+
+    <li *ngIf="postEllipsis"><span>...</span></li>
+
+    <li [ngClass]="{'disabled': lastPage.position == page}">
+      <a href="#" aria-label="Next" (click)="navigateTo(lastPage)">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>

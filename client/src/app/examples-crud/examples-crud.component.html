@@ -1,13 +1,13 @@
-<div *ngIf="!available">
-  <h3 class="text-danger">REST API is not available</h3>
-</div>
 <div *ngIf="available">
-  <div class="col-md-9 col-xs-12">
+  <div class="row">
+    <app-searchbox *ngIf="searchboxConfig" [config]="searchboxConfig" (updateResults)="updateSeach($event)"></app-searchbox>
+
     <table class="table table-striped">
       <thead>
         <tr>
           <th class="text-left">Name</th>
           <th class="text-left">Description</th>
+          <th class="text-center">Size</th>
 
           <th class="text-center">Actions</th>
         </tr>
@@ -17,6 +17,7 @@
         <tr *ngFor="let item of items">
           <td class="text-left">{{item.name}}</td>
           <td class="text-left">{{item.description}}</td>
+          <td class="text-center">{{item.size}}</td>
 
           <td class="text-center">
             <button class="btn btn-xs btn-warning" (click)="editItem(item)">
@@ -31,9 +32,11 @@
         </tr>
       </tbody>
     </table>
+
+    <app-paginator pageSize="25" [total]="total" (updatePage)="updatePage($event)"></app-paginator>
   </div>
 
-  <form class="well col-md-3 col-xs-12" (ngSubmit)="saveItem()">
+  <form class="row well" (ngSubmit)="saveItem()">
     <h4>{{formTitle}}</h4>
 
     <div class="form-group">
@@ -46,6 +49,16 @@
       <textarea class="form-control" rows="3" name="description" [(ngModel)]="currentItem.description"></textarea>
     </div>
 
+    <div class="form-group">
+      <label>Size</label>
+      <select class="form-control" name="size" [(ngModel)]="currentItem.size">
+          <option value=""></option>
+          <option value="medium">Medium</option>
+          <option value="short">Short</option>
+          <option value="tall">Tall</option>
+      </select>
+    </div>
+
     <button type="submit" class="btn btn-success">
       <i class="fa fa-check" aria-hidden="true"></i>
       Save
@@ -55,4 +68,7 @@
       Clear
     </button>
   </form>
+</div>
+<div *ngIf="!available">
+  <h3 class="text-danger">REST API is not available</h3>
 </div>

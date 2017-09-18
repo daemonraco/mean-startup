@@ -25,5 +25,16 @@ module.exports = ({ routeName, app }) => {
         });
     });
 
+    //
+    // Capturing wrong URLs.
+    router.get('*', (req, res) => {
+        res.redirect(`/${routeName}`);
+    });
+    router.all('*', (req, res) => {
+        res.json({
+            error: `Wrong request`
+        });
+    });
+
     app.use(`/${routeName}`, router);
 }
