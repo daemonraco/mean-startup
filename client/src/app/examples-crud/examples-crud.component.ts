@@ -14,6 +14,7 @@ import { ExamplesService } from '../providers/examples.service';
 export class ExamplesCrudComponent implements OnInit {
   protected currentPage: number = -1;
   protected pageQuery: any = {};
+  protected pristineData: any = {};
   protected searchboxQuery: any = {};
 
   available: boolean = true;
@@ -29,8 +30,13 @@ export class ExamplesCrudComponent implements OnInit {
   }
 
   public clearForm(): void {
-    this.formTitle = 'Create Item';
+    this.formTitle = '';
+    Object.assign(this.currentItem, this.pristineData);
     this.currentItem = {};
+  }
+  public createItem(): void {
+    this.formTitle = 'Create Item';
+    this.pristineData = {};
   }
   public deleteItem(item): void {
     this.app.startLoading('Deleting...');
@@ -46,6 +52,7 @@ export class ExamplesCrudComponent implements OnInit {
   public editItem(item): void {
     this.formTitle = 'Edit Item';
     this.currentItem = item;
+    this.pristineData = JSON.parse(JSON.stringify(item));
   }
   public saveItem(): void {
     if (typeof this.currentItem._id === 'undefined') {
