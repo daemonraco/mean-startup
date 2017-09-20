@@ -1,3 +1,6 @@
 {
-    "example": true
+    "example": true,
+    "$exports": {
+        "field": "value"
+    }
 }

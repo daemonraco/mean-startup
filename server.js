@@ -27,6 +27,7 @@ const app = express();
 //
 // Loading configuration manager.
 const configs = require('./includes/configs.manager');
+app.use(configs.publishExports());
 
 //
 // Database.

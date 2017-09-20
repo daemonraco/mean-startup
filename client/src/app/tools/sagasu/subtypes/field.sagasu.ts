@@ -1,8 +1,8 @@
 import { SagasuTextField, SagasuSelectorField } from '.';
 
 export class SagasuField {
-    public static TYPE_SELECTOR = 'selector';
-    public static TYPE_TEXT = 'text';
+    public static get TYPE_SELECTOR(): string { return 'selector'; }
+    public static get TYPE_TEXT(): string { return 'text'; }
 
     public exact: boolean = false;
     public id: string;
