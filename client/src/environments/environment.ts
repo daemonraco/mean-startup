@@ -7,6 +7,7 @@ export const environment = {
   production: false,
   api: {
     host: 'http://localhost:3000',
-    restUri: '/rest/v1'
+    restUri: '/rest/v1',
+    mainConfig: true
   }
 };

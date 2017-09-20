@@ -25,6 +25,13 @@ console.log(`+---------------------------------------------------`);
 const app = express();
 
 //
+// Avoid CORS validations.
+if (!respectCORS) {
+    const cors = require('cors');
+    app.all('*', cors());
+}
+
+//
 // Loading configuration manager.
 const configs = require('./includes/configs.manager');
 app.use(configs.publishExports());
@@ -51,13 +58,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, 'public')));
 // @}
-
-//
-// Avoid CORS validations.
-if (!respectCORS) {
-    const cors = require('cors');
-    app.all('*', cors());
-}
 
 //
 // Loading routes manager.

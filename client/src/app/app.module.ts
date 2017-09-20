@@ -10,6 +10,8 @@ import { AppRoutes } from './app.routes';
 
 import { ToolsModule } from './tools/index';
 
+import { MainConfigService } from './providers/main-config.service';
+
 import { AppComponent } from './app.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { HomeComponent } from './home/home.component';
@@ -36,6 +38,7 @@ import { ExamplesCrudComponent } from './examples-crud/examples-crud.component';
     ToolsModule
   ],
   providers: [
+    MainConfigService
   ],
   bootstrap: [
     AppComponent

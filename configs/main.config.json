@@ -1,4 +1,5 @@
 {
+    "$exports": {},
     "db": {
         "connectionString": "mongodb://<HOSTNAME>:<PORT>/<TABLE>"
     }
