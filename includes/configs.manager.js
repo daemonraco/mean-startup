@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const jsonpath = require('jsonpath-plus');
 
 class ConfigsManager {
     //
@@ -28,24 +29,17 @@ class ConfigsManager {
             if (req.originalUrl.match(pattern)) {
                 const name = req.originalUrl.replace(pattern, '$2');
                 if (name) {
-                    if (typeof this._configs[name] !== 'undefined' && typeof this._configs[name].$exports !== 'undefined') {
-                        res.json(this._configs[name].$exports);
+                    if (typeof this._exports[name] !== 'undefined') {
+                        res.json(this._exports[name]);
                     } else {
-                        if (typeof this._configs[name] !== 'undefined') {
-                            res.status(404).json({
-                                error: true,
-                                message: `Configurations file '${name}' has no exports.`
-                            });
-                        } else {
-                            res.status(404).json({
-                                error: true,
-                                message: `Unknown configurations file '${name}'.`
-                            });
-                        }
+                        res.status(404).json({
+                            error: true,
+                            message: `Unknown exported configuration '${name}'.`
+                        });
                     }
                 } else {
                     res.json({
-                        configs: Object.keys(this._configs)
+                        configs: Object.keys(this._exports)
                     });
                 }
 
@@ -105,6 +99,7 @@ class ConfigsManager {
         }
 
         this._configs = {};
+        this._exports = {};
         for (let i in files) {
             try {
                 console.log(`| \t- '${chalk.green(files[i].name)}'${files[i].specific ? ` (has environment specific)` : ''}`);
@@ -116,12 +111,41 @@ class ConfigsManager {
                 if (files[i].specific) {
                     this._configs[files[i].name] = Object.assign(this._configs[files[i].name], require(files[i].specific.path));
                 }
+
+                this._loadExports(files[i].name);
             } catch (e) {
                 console.error(`Unable to load config '${files[i].name}'.\n\tError: ${e.message}`);
             }
         }
 
         console.log(`|`);
+    }
+    _loadExports(name) {
+        const config = this._configs[name];
+
+        if (typeof config.$exports !== 'undefined' || typeof config.$pathExports !== 'undefined') {
+            this._exports[name] = {};
+        }
+
+        if (typeof config.$exports !== 'undefined') {
+            this._exports[name] = Object.assign(this._exports[name], config.$exports);
+        }
+
+        if (typeof config.$pathExports !== 'undefined') {
+            for (let k in config.$pathExports) {
+                const results = jsonpath({
+                    path: config.$pathExports[k],
+                    json: config
+                });
+
+                this._exports[name][k] = null;
+                if (results.length == 1) {
+                    this._exports[name][k] = results[0];
+                } else if (results.length > 1) {
+                    this._exports[name][k] = results;
+                }
+            }
+        }
     }
 }
 

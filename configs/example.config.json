@@ -1,6 +1,12 @@
 {
     "example": true,
+    "exportedExample": {
+        "aBoolean": false
+    },
     "$exports": {
         "field": "value"
+    },
+    "$pathExports": {
+        "anotherExample": "$.exportedExample"
     }
 }
