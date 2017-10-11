@@ -4,13 +4,14 @@
   "description": "This is a start-up application",
   "main": "server.js",
   "scripts": {
-    "start": "./node_modules/.bin/node server.js",
+    "start": "node server.js",
     "start:live": "./node_modules/.bin/nodemon",
+    "start:client": "cd client && npm start || true",
     "start-all": "bash .tools/start-all.sh",
     "stop-all": "bash .tools/stop-all.sh",
     "init": "bash .tools/init-directories.sh",
     "build": "bash .tools/build-pack.sh",
-    "build-client": "bash .tools/build-client.sh",
+    "build:client": "bash .tools/build-client.sh",
     "local-db": "bash .tools/start-local-db.sh"
   },
   "author": "Alejandro Dario Simi",

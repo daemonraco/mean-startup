@@ -75,7 +75,12 @@ class SchemasManager {
                 console.log(`| Exposing schemas through Restify:`);
                 for (let i in schemas) {
                     try {
-                        restify.serve(app, require(schemas[i].path), restOptions);
+                        const callback = {};
+                        for (let k in schemas[i].callbacks) {
+                            callback[k] = require(schemas[i].callbacks[k]);
+                        }
+
+                        restify.serve(app, require(schemas[i].path), Object.assign(callbacks, restOptions));
                         console.log(`| \t- '/rest/v1/${chalk.green(schemas[i].name)}'`);
                         schemas[i].loaded = true;
                     } catch (e) {
@@ -96,8 +101,8 @@ class SchemasManager {
         this._hiddenSchemas = this._configs.hiddenSchemas;
 
         //
-        // Any file in './schema' that matches the pattern '^(.+)\.schema\.js$'
-        // will be considered for loading. @{
+        // Any file in 'ROOTDIR/schema' that matches the pattern
+        // '^(.+)\.schema\.js$' will be considered for loading. @{
         const pattern = /^(.+)\.schema\.js$/;
         const schemasPath = path.join(__dirname, '../schemas');
         this._schemas = fs
@@ -107,9 +112,44 @@ class SchemasManager {
                 return {
                     name: x.replace(pattern, '$1'),
                     path: path.join(schemasPath, x),
+                    callbacks: {},
                     loaded: false
                 };
             });
+        // @}
+
+        //
+        // Any file in 'ROOTDIR/schema/_middleware' will be considered as schema callbacks.
+        // check https://florianholzapfel.github.io/express-restify-mongoose/#reference
+        // for more information.
+        // Each file name should match the pattern '^(.+)\.(.+)\.js$' where the
+        // first parameter is the name of your schema and the second is the name
+        // of a callback. @{
+        const schemasMWPath = path.join(schemasPath, '_middleware');
+        const patternMW = /^(.+)\.(.+)\.js$/;
+        this._schemasMiddlewares = fs
+            .readdirSync(schemasMWPath)
+            .filter(x => x.match(patternMW))
+            .map(x => {
+                return {
+                    schema: x.replace(pattern, '$1'),
+                    callback: x.replace(pattern, '$1'),
+                    path: path.join(schemasMWPath, x),
+                };
+            });
+        // @}
+
+        //
+        // Merging schemas and middlewares. @{
+        for (let ks in this._schemas) {
+            const schemaName = this._schemas[ks].name;
+
+            for (let km in this._schemasMiddlewares) {
+                if (this._schemasMiddlewares[km].schema == schemaName) {
+                    this._schemas[ks].callbacks[this._schemasMiddlewares[km].callback] = this._schemasMiddlewares[km].path;
+                }
+            }
+        }
         // @}
     }
 }

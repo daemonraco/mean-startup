@@ -54,7 +54,7 @@ class ConfigsManager {
     //
     // Protected methods.
     _load() {
-        this._environmentName = process.env.ENV_NAME || 'develpment';
+        this._environmentName = process.env.ENV_NAME || 'development';
 
         console.log(`| Loading configs (environment: ${chalk.green(this._environmentName)}):`);
 
