@@ -104,7 +104,7 @@ class SchemasManager {
         // Any file in 'ROOTDIR/schema' that matches the pattern
         // '^(.+)\.schema\.js$' will be considered for loading. @{
         const pattern = /^(.+)\.schema\.js$/;
-        const schemasPath = path.join(__dirname, '../schemas');
+        const schemasPath = path.join(__dirname, '../../schemas');
         this._schemas = fs
             .readdirSync(schemasPath)
             .filter(x => x.match(pattern))

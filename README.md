@@ -45,23 +45,22 @@ npm run init
 # Usage
 ## Launching the server
 ```bash
-node server.js
+npm start
 ```
 We recommend to use [`nodemon`](https://www.npmjs.com/package/nodemon).
 
 ### Launching the server with HTTPS
 ```bash
-PORT_SSL=3001 node server.js
+PORT_SSL=3001 npm start
 ```
 ### Launching the server with MongoDB
 ```bash
-DB_NAME=mydb node server.js
+DB_NAME=mydb npm start
 ```
 
 ## Launching the client
 ```bash
-cd client
-ng serve
+npm run start:client
 ```
 Again, we recommend to use [`nodemon`](https://www.npmjs.com/package/nodemon).
 
@@ -74,7 +73,7 @@ npm run build
 
 ## Build only client
 ```bash
-npm run build-client
+npm run build:client
 ```
 
 ## Licence

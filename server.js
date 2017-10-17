@@ -33,7 +33,7 @@ if (!respectCORS) {
 
 //
 // Loading configuration manager.
-const configs = require('./includes/configs.manager');
+const configs = require('./includes/core/configs.manager');
 app.use(configs.publishExports());
 
 //
@@ -60,15 +60,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 // @}
 
 //
+// Loading middlewares.
+const middlewares = require('./includes/core/middleware.manager');
+middlewares.load({ app });
+
+//
 // Loading routes manager.
-const routes = require('./includes/routes.manager');
+const routes = require('./includes/core/routes.manager');
 routes.load({ app });
 
 //
 // Loading schemas manager.
 //   @note this depends on the presence of a Mongo database.
 if (dbName) {
-    const schemas = require('./includes/schemas.manager');
+    const schemas = require('./includes/core/schemas.manager');
     schemas.loadRestfulSchemas({ app });
     schemas.loadInternalSchemas();
 }

@@ -16,7 +16,7 @@ class RoutesManager {
     // Public methods.
     /**
     * Loading routes automatically. Any file in './routes' that matches the
-    * pattern '(.+)\.route\.js$' will automatically required.
+    * pattern '(.+)\.route\.js$' will be automatically required.
     */
     load({ app }) {
         if (!this._loaded) {
@@ -26,7 +26,7 @@ class RoutesManager {
 
             const auxTools = { app };
             const pattern = /(.+)\.route\.js$/;
-            const routesPath = path.join(__dirname, '../routes');
+            const routesPath = path.join(__dirname, '../../routes');
             const routes = fs
                 .readdirSync(routesPath)
                 .filter(x => x.match(pattern))

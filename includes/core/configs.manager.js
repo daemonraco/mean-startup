@@ -58,7 +58,7 @@ class ConfigsManager {
 
         console.log(`| Loading configs (environment: ${chalk.green(this._environmentName)}):`);
 
-        this._configsDir = path.join(__dirname, '../configs');
+        this._configsDir = path.join(__dirname, '../../configs');
 
         const pattern = /^(.*)\.config\.(json|js)$/;
         const envPattern = new RegExp(`^(.*)\.config\.${this._environmentName}\.(json|js)$`);
