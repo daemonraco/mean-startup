@@ -56,13 +56,16 @@ class SchemasManager {
     loadRestfulSchemas({ app }) {
         if (!this._restfulSchemasLoaded) {
             this._restfulSchemasLoaded = true;
+
             //
             // Required libraries.
             const methodOverride = require('method-override');
             const restify = require('express-restify-mongoose');
+
             //
             // Middlewares.
             app.use(methodOverride());
+
             //
             // RESTful API options.
             const restOptions = {

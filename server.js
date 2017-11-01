@@ -3,7 +3,6 @@
 // Environment configurations @{
 const port = process.env.PORT || 3000;
 const portSSL = process.env.PORT_SSL || false;
-const respectCORS = process.env.RESPECT_CORS ? true : false;
 // @}
 
 //
@@ -24,17 +23,17 @@ console.log(`+---------------------------------------------------`);
 const app = express();
 
 //
-// Avoid CORS validations.
-if (!respectCORS) {
-    const cors = require('cors');
-    app.all('*', cors());
-}
-
-//
 // Loading configuration manager.
 const configs = require('./includes/core/configs.manager');
 const mainConf = configs.get('main');
 app.use(configs.publishExports());
+
+//
+// Avoid CORS validations.
+if (!mainConf.respectCORS) {
+    const cors = require('cors');
+    app.all('*', cors());
+}
 
 //
 // Database.
@@ -117,7 +116,7 @@ http.createServer(app).listen(port, () => {
     if (mainConf.db.active) {
         console.log(`| \t\t${chalk.cyan(`Restify available`)}`);
     }
-    console.log(`| \tCORS: ${respectCORS ? chalk.green('Respects the protocol') : chalk.yellow('Avoiding warnings')}`);
+    console.log(`| \tCORS: ${mainConf.respectCORS ? chalk.green('Respects the protocol') : chalk.yellow('Avoiding warnings')}`);
 
     console.log(`+---------------------------------------------------`);
 });

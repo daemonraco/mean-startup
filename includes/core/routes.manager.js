@@ -22,8 +22,6 @@ class RoutesManager {
         if (!this._loaded) {
             this._loaded = true;
 
-            console.log(`| Loading routes:`);
-
             const auxTools = { app };
             const pattern = /(.+)\.route\.js$/;
             const routesPath = path.join(__dirname, '../../routes');
@@ -37,17 +35,21 @@ class RoutesManager {
                     };
                 });
 
-            for (let i in routes) {
-                try {
-                    auxTools.routeName = routes[i].name;
-                    require(routes[i].path)(auxTools);
-                    console.log(`| \t- '${chalk.green(routes[i].name)}'`);
-                } catch (e) {
-                    console.error(chalk.red(`Unable to load route '${routes[i].name}'.\n\tError: ${e.message}`));
-                }
-            }
+            if (routes.length > 0) {
+                console.log(`| Loading routes:`);
 
-            console.log(`|`);
+                for (let i in routes) {
+                    try {
+                        auxTools.routeName = routes[i].name;
+                        require(routes[i].path)(auxTools);
+                        console.log(`| \t- '${chalk.green(routes[i].name)}'`);
+                    } catch (e) {
+                        console.error(chalk.red(`Unable to load route '${routes[i].name}'.\n\tError: ${e.message}`));
+                    }
+                }
+
+                console.log(`|`);
+            }
         }
     }
     //

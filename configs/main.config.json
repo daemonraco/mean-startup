@@ -3,5 +3,6 @@
     "db": {
         "active": false,
         "connectionString": "mongodb://<HOSTNAME>:<PORT>/<TABLE>"
-    }
+    },
+    "respectCORS": true
 }

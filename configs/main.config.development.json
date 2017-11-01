@@ -2,5 +2,6 @@
     "db": {
         "active": false,
         "connectionString": "mongodb://localhost/deafult"
-    }
+    },
+    "respectCORS": false
 }

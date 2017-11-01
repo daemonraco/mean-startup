@@ -20,8 +20,6 @@ class MiddlewaresManager {
     if (!this._loaded) {
       this._loaded = true;
 
-      console.log(`| Loading middlewares:`);
-
       const auxTools = { app };
       const pattern = /(.+)\.middleware\.js$/;
       const middlewaresPath = path.join(__dirname, '..');
@@ -35,16 +33,20 @@ class MiddlewaresManager {
           };
         });
 
-      for (let i in middlewares) {
-        try {
-          app.use(require(middlewares[i].path));
-          console.log(`| \t- '${chalk.green(middlewares[i].name)}'`);
-        } catch (e) {
-          console.error(chalk.red(`Unable to load middleware '${middlewares[i].name}'.\n\tError: ${e.message}`));
-        }
-      }
+      if (middlewares.length > 0) {
+        console.log(`| Loading middlewares:`);
 
-      console.log(`|`);
+        for (let i in middlewares) {
+          try {
+            app.use(require(middlewares[i].path));
+            console.log(`| \t- '${chalk.green(middlewares[i].name)}'`);
+          } catch (e) {
+            console.error(chalk.red(`Unable to load middleware '${middlewares[i].name}'.\n\tError: ${e.message}`));
+          }
+        }
+
+        console.log(`|`);
+      }
     }
   }
   //

@@ -2,20 +2,21 @@
 
 module.exports = ({ routeName, app }) => {
     //
-    // Environment configurations @{
-    var respectCORS = process.env.RESPECT_CORS ? true : false;
+    // Required libraries @{
+    const configs = require('../includes/core/configs.manager');
+    const express = require('express');
+    const router = express.Router();
     // @}
 
     //
-    // Required libraries @{
-    var express = require('express');
-    var router = express.Router();
+    // Environment configurations @{
+    const mainConf = configs.get('main');
     // @}
 
     //
     // Avoid CORS validations.
-    if (!respectCORS) {
-        var cors = require('cors');
+    if (!mainConf.respectCORS) {
+        const cors = require('cors');
         router.all('*', cors());
     }
 
