@@ -4,7 +4,7 @@
 This is a simple [MEAN](https://en.wikipedia.org/wiki/MEAN_(software_bundle))
 application that gives you a starting point to build something in using:
 * [MongoDB](https://www.mongodb.com/) (optional)
-* [Express](http://expressjs.com/)
+* [ExpressJS](http://expressjs.com/)
 * [Angular](https://angular.io/) (version 4)
 * [NodeJS](https://nodejs.org)
 
@@ -47,22 +47,21 @@ npm run init
 ```bash
 npm start
 ```
-We recommend to use [`nodemon`](https://www.npmjs.com/package/nodemon).
+We recommend to use `npm run start:live` because it uses [`nodemon`](https://www.npmjs.com/package/nodemon).
 
 ### Launching the server with HTTPS
 ```bash
 PORT_SSL=3001 npm start
 ```
-### Launching the server with MongoDB
+### Launching the server for a specific environment
 ```bash
-DB_NAME=mydb npm start
+ENV_NAME=my_environemnt npm start
 ```
 
 ## Launching the client
 ```bash
 npm run start:client
 ```
-Again, we recommend to use [`nodemon`](https://www.npmjs.com/package/nodemon).
 
 # Build
 Getting ready for production?
@@ -75,6 +74,9 @@ npm run build
 ```bash
 npm run build:client
 ```
+
+## More information
+Do you need more information about this _MEAN_ approach? Take a look at our [docs](docs/_contents.md).
 
 ## Licence
 MIT &copy; [Alejandro Dario Simi](http://daemonraco.com)
