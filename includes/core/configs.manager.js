@@ -5,6 +5,8 @@ const path = require('path');
 const chalk = require('chalk');
 const jsonpath = require('jsonpath-plus');
 
+const mergeObjects = require('../core-tools/merge-objects');
+
 class ConfigsManager {
     //
     // Constructor.
@@ -109,7 +111,7 @@ class ConfigsManager {
                 //
                 // Mergin with the environment specific configuration.
                 if (files[i].specific) {
-                    this._configs[files[i].name] = Object.assign(this._configs[files[i].name], require(files[i].specific.path));
+                    this._configs[files[i].name] = mergeObjects(this._configs[files[i].name], require(files[i].specific.path));
                 }
 
                 this._loadExports(files[i].name);

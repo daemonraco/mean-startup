@@ -34,7 +34,6 @@ if (!respectCORS) {
 // Loading configuration manager.
 const configs = require('./includes/core/configs.manager');
 const mainConf = configs.get('main');
-console.log('DEBUG', JSON.stringify(mainConf, null, 2));
 app.use(configs.publishExports());
 
 //
