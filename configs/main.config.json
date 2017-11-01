@@ -1,6 +1,9 @@
 {
     "$exports": {},
     "db": {
+        "DEBUG1": 10,
+        "DEBUG3": "APPLE",
+        "active": false,
         "connectionString": "mongodb://<HOSTNAME>:<PORT>/<TABLE>"
     }
 }

@@ -3,19 +3,18 @@
 // Environment configurations @{
 const port = process.env.PORT || 3000;
 const portSSL = process.env.PORT_SSL || false;
-const dbName = process.env.DB_NAME || false;
 const respectCORS = process.env.RESPECT_CORS ? true : false;
 // @}
 
 //
 // Required libraries @{
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-const https = require('https');
-const http = require('http');
-const fs = require('fs');
 const chalk = require('chalk');
+const bodyParser = require('body-parser');
+const express = require('express');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+const path = require('path');
 // @}
 
 console.log(`+---------------------------------------------------`);
@@ -34,18 +33,20 @@ if (!respectCORS) {
 //
 // Loading configuration manager.
 const configs = require('./includes/core/configs.manager');
+const mainConf = configs.get('main');
+console.log('DEBUG', JSON.stringify(mainConf, null, 2));
 app.use(configs.publishExports());
 
 //
 // Database.
-if (dbName) {
+if (mainConf.db.active) {
     const mongoose = require('mongoose');
     mongoose.Promise = global.Promise;
-    mongoose.connect(`mongodb://localhost/${dbName}`, {
+    mongoose.connect(mainConf.db.connectionString, {
         useMongoClient: true
     });
     mongoose.connection.on('error', (err) => {
-        console.log(err.name + ': ' + err.message);
+        console.error(chalk.red(`Mongoose Error: ${err.name}: ${err.message}`));
     });
 }
 // @}
@@ -54,7 +55,15 @@ if (dbName) {
 // Basic configurations @{
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// @}
 
+//
+// Static folders @{
+const specificAssetsFolder = path.join(__dirname, `assets-by-env/${configs.environmentName()}`);
+if (fs.existsSync(specificAssetsFolder)) {
+    console.log(`| Loading specific assets folder: '${configs.environmentName()}'\n|`);
+    app.use(express.static(specificAssetsFolder));
+}
 app.use(express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, 'public')));
 // @}
@@ -72,7 +81,7 @@ routes.load({ app });
 //
 // Loading schemas manager.
 //   @note this depends on the presence of a Mongo database.
-if (dbName) {
+if (mainConf.db.active) {
     const schemas = require('./includes/core/schemas.manager');
     schemas.loadRestfulSchemas({ app });
     schemas.loadInternalSchemas();
@@ -99,19 +108,21 @@ const options = {
     cert: fs.readFileSync('secure/cert.pem')
 };
 
+//
 // Create an HTTP service.
 http.createServer(app).listen(port, () => {
     console.log(`+---------------------------------------------------`);
     console.log(`| Server running on '${chalk.green(`http://localhost:${port}`)}'`);
 
-    console.log(`| \tDB: ${chalk.green(dbName ? dbName : 'Not in use')}`);
-    if (dbName) {
+    console.log(`| \tDB: ${chalk.green(mainConf.db.active ? 'In use' : 'Not in use')}`);
+    if (mainConf.db.active) {
         console.log(`| \t\t${chalk.cyan(`Restify available`)}`);
     }
     console.log(`| \tCORS: ${respectCORS ? chalk.green('Respects the protocol') : chalk.yellow('Avoiding warnings')}`);
 
     console.log(`+---------------------------------------------------`);
 });
+
 //
 // Create an HTTPS service identical to the HTTP service.
 if (portSSL) {

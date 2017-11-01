@@ -75,9 +75,9 @@ class SchemasManager {
                 console.log(`| Exposing schemas through Restify:`);
                 for (let i in schemas) {
                     try {
-                        const callback = {};
+                        const callbacks = {};
                         for (let k in schemas[i].callbacks) {
-                            callback[k] = require(schemas[i].callbacks[k]);
+                            callbacks[k] = require(schemas[i].callbacks[k]);
                         }
 
                         restify.serve(app, require(schemas[i].path), Object.assign(callbacks, restOptions));
