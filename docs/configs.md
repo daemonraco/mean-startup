@@ -109,21 +109,19 @@ You'll get something like this:
 ```
 
 ## Main configurations
-As expected, this _MEAN_ implementation already has two required configuration files, one called `main` and another called `schemas`.
+As expected, this _MEAN_ implementation already has a required configuration
+file called `main`.
 
-### Main configuration
-Main configuration holds some values that change the behavior of your server:
+Such configuration holds some values that change the behavior of your server:
 * `db`: Mongoose configuration
     * `active` (boolean): Indicates if a mongo database connection has to be
     used or not.
     * `connectionString` (string): Database connection url.
 * `respectCORS` (boolean): When `false`, your server won't enforce CORS checks.
-
-### Schemas configuration
-By default, all your schemas are published through
+* `hiddenSchemas` (string[]): By default, all your schemas are published through
 [restify](https://florianholzapfel.github.io/express-restify-mongoose/), but if
 you want to hide some of them from the internet, you may add their names into
-this configuation file inside the property `hiddenSchemas`.
+this list.
 
 ---
 [Back](_contents.md)

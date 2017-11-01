@@ -100,7 +100,7 @@ class SchemasManager {
         this._restfulSchemasLoaded = false;
         this._internalSchemasLoaded = false;
 
-        this._configs = configs.get('schemas');
+        this._configs = configs.get('main');
         this._hiddenSchemas = this._configs.hiddenSchemas;
 
         //

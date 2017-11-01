@@ -1,8 +1,8 @@
 {
-    "$exports": {},
     "db": {
         "active": false,
         "connectionString": "mongodb://<HOSTNAME>:<PORT>/<TABLE>"
     },
+    "hiddenSchemas": [],
     "respectCORS": true
 }
