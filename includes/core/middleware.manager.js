@@ -41,7 +41,7 @@ class MiddlewaresManager {
             app.use(require(middlewares[i].path));
             console.log(`| \t- '${chalk.green(middlewares[i].name)}'`);
           } catch (e) {
-            console.error(chalk.red(`Unable to load middleware '${middlewares[i].name}'.\n\tError: ${e.message}`));
+            console.error(chalk.red(`Unable to load middleware '${middlewares[i].name}'.\n\tError: ${e}`));
           }
         }
 

@@ -116,7 +116,7 @@ class ConfigsManager {
 
                 this._loadExports(files[i].name);
             } catch (e) {
-                console.error(`Unable to load config '${files[i].name}'.\n\tError: ${e.message}`);
+                console.error(`Unable to load config '${files[i].name}'.\n\tError: ${e}`);
             }
         }
 

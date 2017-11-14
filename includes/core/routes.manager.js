@@ -44,7 +44,7 @@ class RoutesManager {
                         require(routes[i].path)(auxTools);
                         console.log(`| \t- '${chalk.green(routes[i].name)}'`);
                     } catch (e) {
-                        console.error(chalk.red(`Unable to load route '${routes[i].name}'.\n\tError: ${e.message}`));
+                        console.error(chalk.red(`Unable to load route '${routes[i].name}'.\n\tError: ${e}`));
                     }
                 }
 

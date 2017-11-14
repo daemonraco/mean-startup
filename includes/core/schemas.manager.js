@@ -46,7 +46,7 @@ class SchemasManager {
                         console.log(`| \t- '${chalk.green(schemas[i].name)}'`);
                         schemas[i].loaded = true;
                     } catch (e) {
-                        console.error(`Unable to load schema '${schemas[i].name}'.\n\tError: ${e.message}`);
+                        console.error(`Unable to load schema '${schemas[i].name}'.\n\tError: ${e}`);
                     }
                 }
                 console.log(`|`);
@@ -87,7 +87,7 @@ class SchemasManager {
                         console.log(`| \t- '/rest/v1/${chalk.green(schemas[i].name)}'`);
                         schemas[i].loaded = true;
                     } catch (e) {
-                        console.error(`Unable to load schema '${schemas[i].name}'.\n\tError: ${e.message}`);
+                        console.error(`Unable to load schema '${schemas[i].name}'.\n\tError: ${e}`);
                     }
                 }
                 console.log(`|`);
