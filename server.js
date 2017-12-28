@@ -67,6 +67,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // @}
 
 //
+// Loading loaders.
+const loaders = require('./includes/core/loader.manager');
+loaders.load({ app });
+
+//
 // Loading middlewares.
 const middlewares = require('./includes/core/middleware.manager');
 middlewares.load({ app });
