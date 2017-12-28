@@ -37,15 +37,21 @@ if (!mainConf.respectCORS) {
 
 //
 // Database.
+let activateRestify = false;
 if (mainConf.db.active) {
-    const mongoose = require('mongoose');
-    mongoose.Promise = global.Promise;
-    mongoose.connect(mainConf.db.connectionString, {
-        useMongoClient: true
-    });
-    mongoose.connection.on('error', (err) => {
-        console.error(chalk.red(`Mongoose Error: ${err.name}: ${err.message}`));
-    });
+    switch (mainConf.db.type) {
+        case 'mongoose':
+            const mongoose = require('mongoose');
+            mongoose.Promise = global.Promise;
+            mongoose.connect(mainConf.db.connectionString, {
+                useMongoClient: true
+            });
+            mongoose.connection.on('error', (err) => {
+                console.error(chalk.red(`Mongoose Error: ${err.name}: ${err.message}`));
+            });
+            activateRestify = true;
+            break;
+    }
 }
 // @}
 
@@ -84,7 +90,7 @@ routes.load({ app });
 //
 // Loading schemas manager.
 //   @note this depends on the presence of a Mongo database.
-if (mainConf.db.active) {
+if (mainConf.db.active && mainConf.db.type === 'mongoose') {
     const schemas = require('./includes/core/schemas.manager');
     schemas.loadRestfulSchemas({ app });
     schemas.loadInternalSchemas();
@@ -117,8 +123,8 @@ http.createServer(app).listen(port, () => {
     console.log(`+---------------------------------------------------`);
     console.log(`| Server running on '${chalk.green(`http://localhost:${port}`)}'`);
 
-    console.log(`| \tDB: ${chalk.green(mainConf.db.active ? 'In use' : 'Not in use')}`);
-    if (mainConf.db.active) {
+    console.log(`| \tDB: ${chalk.green(mainConf.db.active ? `In use (type: '${mainConf.db.type}')` : 'Not in use')}`);
+    if (activateRestify) {
         console.log(`| \t\t${chalk.cyan(`Restify available`)}`);
     }
     console.log(`| \tCORS: ${mainConf.respectCORS ? chalk.green('Respects the protocol') : chalk.yellow('Avoiding warnings')}`);

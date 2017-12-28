@@ -1,6 +1,7 @@
 {
     "db": {
         "active": false,
+        "type": "mongoose",
         "connectionString": "mongodb://<HOSTNAME>:<PORT>/<TABLE>"
     },
     "hiddenSchemas": [],
