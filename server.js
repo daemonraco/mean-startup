@@ -11,6 +11,7 @@ const chalk = require('chalk');
 const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
+const holder = require('./includes/core/holder');
 const http = require('http');
 const https = require('https');
 const path = require('path');
@@ -21,6 +22,7 @@ console.log(`+---------------------------------------------------`);
 //
 // Main application.
 const app = express();
+holder.register('app', app);
 
 //
 // Loading configuration manager.
@@ -50,6 +52,8 @@ if (mainConf.db.active) {
                 console.error(chalk.red(`Mongoose Error: ${err.name}: ${err.message}`));
             });
             activateRestify = true;
+
+            holder.register(['db', 'mongoose'], app);
             break;
     }
 }
