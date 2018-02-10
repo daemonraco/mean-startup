@@ -104,12 +104,12 @@ class ConfigsManager {
         this._exports = {};
         for (let i in files) {
             try {
-                console.log(`| \t- '${chalk.green(files[i].name)}'${files[i].specific ? ` (has environment specific)` : ''}`);
+                console.log(`| \t- '${chalk.green(files[i].name)}'${files[i].specific ? ` (has specific configuration)` : ''}`);
                 //
                 // Loading basic configuration.
                 this._configs[files[i].name] = require(files[i].path);
                 //
-                // Mergin with the environment specific configuration.
+                // Merging with the environment specific configuration.
                 if (files[i].specific) {
                     this._configs[files[i].name] = mergeObjects(this._configs[files[i].name], require(files[i].specific.path));
                 }
